@@ -14,6 +14,7 @@ set(HEADER
 	src/Guid.h
 	src/IExecutor.h
 	src/IObservable.h
+	src/Log.h
 	src/Observable.h
 	src/RunLoopExecutor.h
 	src/SingleThreadExecutor.h
