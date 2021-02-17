@@ -6,6 +6,7 @@ set(SOURCE
 	src/Guid.cpp
 	src/RunLoopExecutor.cpp
 	src/SingleThreadExecutor.cpp
+	src/Subscription.cpp
 	src/ThreadPoolExecutor.cpp)
 
 set(HEADER
