@@ -28,7 +28,6 @@ public:
     Observable& operator=(const Observable& other) = delete;
     Observable& operator=(Observable&& other) = default;
 
-
     void set_default_params() {
         executor_.reset();
         execution_policy_ = ExecutionPolicy::NoExecutor;
@@ -76,7 +75,6 @@ public:
 
         subscriptions_.emplace_back(this, subscriber.get_uuid());
         return subscriptions_.back();
-        //return Subscription(this, subscriber.get_uuid());
     }
 
     void unsubscribe(const std::string& uuid) override {
@@ -86,15 +84,12 @@ public:
                 break;
             }
         }
-
-        /*if (subscribers_.size() == 1 && linked_subscription_) {
-            linked_subscription_->unsubscribe();
-        }*/
     }
 
     std::optional<Subscription> get_linked_subscription() override {
         return linked_subscription_;
     }
+
     size_t subscribers_count() const override {
         return subscribers_.size();
     }
@@ -172,6 +167,7 @@ public:
     void set_linked_info(Subscription subscription) {
         linked_subscription_ = std::move(subscription);
     }
+
 private:
     std::shared_ptr<IExecutor> executor_{ nullptr };
     ExecutionPolicy execution_policy_ = ExecutionPolicy::NoExecutor;
