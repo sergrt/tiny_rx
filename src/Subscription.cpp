@@ -8,6 +8,7 @@ using namespace utils;
 
 Subscription::Subscription() {
     uuid_ = utils::get_uuid();
+    log(LogSeverity::Trace, "Default constructing subscription " + uuid_);
 };
 
 Subscription::Subscription(IObservable* observable, const std::string& subscriber_id) {

@@ -39,17 +39,6 @@ public:
         return *this;
     }
 
-    /*
-    Subscriber(const Subscriber& other) {
-        utils::log(utils::LogSeverity::Trace, "Copying subscriber " + other.uuid_);
-        uuid_ = other.uuid_;
-        func_ = other.func_;
-        end_func_ = other.end_func_;
-        error_func_ = other.error_func_;
-        execution_policy_ = other.execution_policy_;
-        executor_ = other.executor_;
-    }
-    */
     [[nodiscard]] std::string get_uuid() const {
         return uuid_;
     }
@@ -99,7 +88,6 @@ public:
     }
 
 private:
-
     void swap(Subscriber& other) noexcept {
         std::swap(uuid_, other.uuid_);
         std::swap(func_, other.func_);
