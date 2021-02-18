@@ -24,7 +24,10 @@ public:
 
     // This is usually not what is intended
     Observable(const Observable& other) = delete;
+    Observable(Observable&& other) = default;
     Observable& operator=(const Observable& other) = delete;
+    Observable& operator=(Observable&& other) = default;
+
 
     void set_default_params() {
         executor_.reset();
@@ -166,24 +169,6 @@ public:
         return *proxy_observable;
     }
 
-    /*
-    Observable<char>& first_char() {
-        auto proxy_observable = std::shared_ptr<Observable<char>>(new Observable<char>());
-        auto uuid = this->subscribe(
-            [proxy_observable](T... args) {
-            proxy_observable->next('F');
-        }
-        );
-        proxy_observable->chained_subscriber_uuid_ = uuid;
-        proxy_observable->chained_observable_ = this;
-        return *proxy_observable;
-    }
-    */
-    /*
-    void set_linked_info(IObservable* linked_observable, const std::string& subscription_uuid) {
-        linked_subscription_ = Subscription(linked_observable, subscription_uuid);
-    }
-    */
     void set_linked_info(Subscription subscription) {
         linked_subscription_ = std::move(subscription);
     }
@@ -195,8 +180,8 @@ private:
     std::list<Subscription> subscriptions_;
     const std::string uuid_ = utils::get_uuid(); // For debug
 
-    // linked - means this is a proxy observable made to make
-    // map, filter or other function
+    // linked - means that this observable is a proxy observable
+    // made to allow subscribers to subscribe on map, filter or other function
     std::optional<Subscription> linked_subscription_;
 };
 
