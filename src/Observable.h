@@ -18,7 +18,7 @@ template<typename ...T>
 class Observable : public IObservable, public std::enable_shared_from_this<IObservable> {
 public:
     Observable() {
-        std::cout << "Constructing observable " << uuid_ << "\n";
+        log(LogSeverity::Trace, "Constructing observable " + uuid_);
         set_default_params();
     }
 
@@ -32,7 +32,7 @@ public:
     }
 
     ~Observable() override {
-        std::cout << "Destructing observable " << uuid_ << "\n";
+        log(LogSeverity::Trace, "Destructing observable " + uuid_);
         for (auto& s : subscriptions_) {
             s.reset();
         }
@@ -45,7 +45,7 @@ public:
     }
 
     template<typename F, std::enable_if_t<std::is_object_v<F>, bool> = true>
-    std::string subscribe(std::shared_ptr<F> object) {
+    Subscription subscribe(std::shared_ptr<F> object) {
         return subscribe(
             [object](T... args) { object->on_next(std::move(args...)); },
             [object]() { object->on_end(); },
@@ -162,7 +162,7 @@ public:
             proxy_observable->end();
         }
         );
-        proxy_observable->set_linked_info(this, subscription.get_uuid());
+        proxy_observable->set_linked_info(subscription);
         return *proxy_observable;
     }
 

@@ -2,26 +2,6 @@
 
 project(tirx VERSION 0.8.1 DESCRIPTION "tirx - tiny reactive programming library")
 
-set(SOURCE
-	src/Guid.cpp
-	src/RunLoopExecutor.cpp
-	src/SingleThreadExecutor.cpp
-	src/Subscription.cpp
-	src/ThreadPoolExecutor.cpp)
+add_subdirectory(src)
 
-set(HEADER
-	src/ExecutionPolicy.h
-	src/Guid.h
-	src/IExecutor.h
-	src/IObservable.h
-	src/Log.h
-	src/Observable.h
-	src/RunLoopExecutor.h
-	src/SingleThreadExecutor.h
-	src/Subscriber.h
-	src/Subscription.h
-	src/ThreadPoolExecutor.h)
-
-add_library(tirx STATIC ${SOURCE} ${HEADER})
-
-set_property(TARGET tirx PROPERTY CXX_STANDARD 17)
+add_subdirectory(test)

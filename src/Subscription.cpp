@@ -1,10 +1,10 @@
 #include "Subscription.h"
-
 #include "Guid.h"
-
-#include <iostream>
+#include "Log.h"
 
 namespace tirx {
+
+using namespace utils;
 
 Subscription::Subscription() {
     uuid_ = utils::get_uuid();
@@ -12,14 +12,14 @@ Subscription::Subscription() {
 
 Subscription::Subscription(IObservable* observable, const std::string& subscriber_id) {
     uuid_ = utils::get_uuid();
-    std::cout << "Constructing subscription " << uuid_ << "\n";
+    log(LogSeverity::Trace, "Constructing subscription " + uuid_);
     observable_ = observable;
     subscriber_id_ = subscriber_id;
     valid_ = std::make_shared<bool>(true);
 }
 
 Subscription::Subscription(const Subscription& other) {
-    std::cout << "Copying subscription " << other.uuid_ << "\n";
+    log(LogSeverity::Trace, "Copying subscription " + uuid_);
     observable_ = other.observable_;
     subscriber_id_ = other.subscriber_id_;
     uuid_ = other.uuid_;
@@ -27,7 +27,7 @@ Subscription::Subscription(const Subscription& other) {
 }
 
 Subscription::Subscription(Subscription&& other) {
-    std::cout << "Move construct subscription " << other.uuid_ << "\n";
+    log(LogSeverity::Trace, "Move construct subscription " + uuid_);
     observable_ = other.observable_;
     subscriber_id_ = other.subscriber_id_;
     uuid_ = other.uuid_;
@@ -35,7 +35,7 @@ Subscription::Subscription(Subscription&& other) {
 }
 
 Subscription& Subscription::operator=(const Subscription& other) {
-    std::cout << "Operator= subscription " << other.uuid_ << "\n";
+    log(LogSeverity::Trace, "Operator= subscription " + uuid_);
     observable_ = other.observable_;
     subscriber_id_ = other.subscriber_id_;
     uuid_ = other.uuid_;
@@ -44,7 +44,7 @@ Subscription& Subscription::operator=(const Subscription& other) {
 }
 
 Subscription& Subscription::operator=(Subscription&& other) {
-    std::cout << "Move operator= subscription " << other.uuid_ << "\n";
+    log(LogSeverity::Trace, "Move operator= subscription " + uuid_);
     observable_ = other.observable_;
     subscriber_id_ = other.subscriber_id_;
     uuid_ = other.uuid_;
@@ -53,11 +53,7 @@ Subscription& Subscription::operator=(Subscription&& other) {
 }
 
 Subscription::~Subscription() {
-    try {
-        std::cout << "Destructing subscription " << uuid_ << "\n";
-    } catch(...) {
-        
-    }
+    log(LogSeverity::Trace, "Destructing subscription " + uuid_);
 }
 
 void Subscription::reset() {

@@ -6,19 +6,20 @@
 #include "Log.h"
 
 #include <functional>
-#include <iostream>
 
 namespace tirx {
+
+using namespace utils;
 
 template<typename ...T>
 class Subscriber {
 public:
     Subscriber() : uuid_{ utils::get_uuid() } {
-        utils::log(utils::LogSeverity::Trace, "Constructing subscriber " + uuid_);
+        log(LogSeverity::Trace, "Constructing subscriber " + uuid_);
     }
 
     ~Subscriber() {
-        utils::log(utils::LogSeverity::Trace, "Destructing subscriber " + uuid_);
+        log(LogSeverity::Trace, "Destructing subscriber " + uuid_);
     }
 
     Subscriber(const Subscriber& other) = delete;
@@ -27,13 +28,13 @@ public:
 
     Subscriber(Subscriber&& other) noexcept
         : Subscriber() {
-        utils::log(utils::LogSeverity::Trace, "Move constructing subscriber " + other.uuid_);
+        log(LogSeverity::Trace, "Move constructing subscriber " + other.uuid_);
         other.swap(*this);
     }
 
     // We want no copy assignment, so use explicit && here
     Subscriber& operator=(Subscriber&& other) noexcept {
-        utils::log(utils::LogSeverity::Trace, "Move operator= subscriber " + other.uuid_);
+        log(LogSeverity::Trace, "Move operator= subscriber " + other.uuid_);
         other.swap(this);
         return *this;
     }
