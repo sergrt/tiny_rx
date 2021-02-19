@@ -22,7 +22,7 @@ public:
         set_default_params();
     }
 
-    // This is usually not what is intended
+    // This usually is not what intended
     Observable(const Observable& other) = delete;
     Observable(Observable&& other) = default;
     Observable& operator=(const Observable& other) = delete;

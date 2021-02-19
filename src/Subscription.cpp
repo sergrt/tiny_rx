@@ -27,30 +27,23 @@ Subscription::Subscription(const Subscription& other) {
     valid_ = other.valid_;
 }
 
-Subscription::Subscription(Subscription&& other) {
+Subscription::Subscription(Subscription&& other) noexcept
+    : Subscription() {
     log(LogSeverity::Trace, "Move construct subscription " + uuid_);
-    observable_ = other.observable_;
-    subscriber_uuid_ = other.subscriber_uuid_;
-    uuid_ = other.uuid_;
-    valid_ = other.valid_;
+    other.swap(*this);
 }
 
-Subscription& Subscription::operator=(const Subscription& other) {
+Subscription& Subscription::operator=(Subscription other) noexcept {
     log(LogSeverity::Trace, "Operator= subscription " + uuid_);
-    observable_ = other.observable_;
-    subscriber_uuid_ = other.subscriber_uuid_;
-    uuid_ = other.uuid_;
-    valid_ = other.valid_;
+    other.swap(*this);
     return *this;
 }
 
-Subscription& Subscription::operator=(Subscription&& other) {
-    log(LogSeverity::Trace, "Move operator= subscription " + uuid_);
-    observable_ = other.observable_;
-    subscriber_uuid_ = other.subscriber_uuid_;
-    uuid_ = other.uuid_;
-    valid_ = other.valid_;
-    return *this;
+void Subscription::swap(Subscription& other) {
+    std::swap(valid_, other.valid_);
+    std::swap(observable_, other.observable_);
+    std::swap(subscriber_uuid_, other.subscriber_uuid_);
+    std::swap(uuid_, other.uuid_);
 }
 
 Subscription::~Subscription() {
