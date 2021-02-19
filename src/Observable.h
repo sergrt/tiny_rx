@@ -122,7 +122,6 @@ public:
         auto subscription = this->subscribe(
             [map_func, proxy_observable](T... args) {
             auto res = map_func(args...);
-
             std::apply(&Observable::next, std::tuple_cat(make_tuple(proxy_observable.get()), res));
         }
         );
@@ -134,7 +133,7 @@ public:
         auto proxy_observable = std::make_shared<Observable<T...>>();
         auto subscription = this->subscribe(
             [filter_func, proxy_observable](T... args) {
-            auto filter_res = filter_func(args...);
+            const auto filter_res = filter_func(args...);
             if (filter_res)
                 proxy_observable->next(args...);
         }
@@ -150,7 +149,6 @@ public:
 
         auto subscription = this->subscribe(
             [reduce_func, result](T... args) {
-
             std::apply([reduce_func, result](auto&&... values) {((
                 *result = reduce_func(*result, values)
                 ), ...); }, std::make_tuple(args...));

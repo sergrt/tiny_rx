@@ -15,14 +15,14 @@ Subscription::Subscription(IObservable* observable, const std::string& subscribe
     uuid_ = utils::get_uuid();
     log(LogSeverity::Trace, "Constructing subscription " + uuid_);
     observable_ = observable;
-    subscriber_id_ = subscriber_id;
+    subscriber_uuid_ = subscriber_id;
     valid_ = std::make_shared<bool>(true);
 }
 
 Subscription::Subscription(const Subscription& other) {
     log(LogSeverity::Trace, "Copying subscription " + uuid_);
     observable_ = other.observable_;
-    subscriber_id_ = other.subscriber_id_;
+    subscriber_uuid_ = other.subscriber_uuid_;
     uuid_ = other.uuid_;
     valid_ = other.valid_;
 }
@@ -30,7 +30,7 @@ Subscription::Subscription(const Subscription& other) {
 Subscription::Subscription(Subscription&& other) {
     log(LogSeverity::Trace, "Move construct subscription " + uuid_);
     observable_ = other.observable_;
-    subscriber_id_ = other.subscriber_id_;
+    subscriber_uuid_ = other.subscriber_uuid_;
     uuid_ = other.uuid_;
     valid_ = other.valid_;
 }
@@ -38,7 +38,7 @@ Subscription::Subscription(Subscription&& other) {
 Subscription& Subscription::operator=(const Subscription& other) {
     log(LogSeverity::Trace, "Operator= subscription " + uuid_);
     observable_ = other.observable_;
-    subscriber_id_ = other.subscriber_id_;
+    subscriber_uuid_ = other.subscriber_uuid_;
     uuid_ = other.uuid_;
     valid_ = other.valid_;
     return *this;
@@ -47,7 +47,7 @@ Subscription& Subscription::operator=(const Subscription& other) {
 Subscription& Subscription::operator=(Subscription&& other) {
     log(LogSeverity::Trace, "Move operator= subscription " + uuid_);
     observable_ = other.observable_;
-    subscriber_id_ = other.subscriber_id_;
+    subscriber_uuid_ = other.subscriber_uuid_;
     uuid_ = other.uuid_;
     valid_ = other.valid_;
     return *this;
@@ -65,7 +65,7 @@ void Subscription::unsubscribe() {
     if (*valid_) {
         auto linked_subscription = observable_->get_linked_subscription();
         if (!linked_subscription || observable_->subscribers_count() != 1) {
-            observable_->unsubscribe(subscriber_id_);
+            observable_->unsubscribe(subscriber_uuid_);
         } else {
             linked_subscription->unsubscribe();
         }
@@ -74,7 +74,7 @@ void Subscription::unsubscribe() {
 }
 
 std::string Subscription::get_uuid() const {
-    return subscriber_id_;
+    return subscriber_uuid_;
 }
 
 }

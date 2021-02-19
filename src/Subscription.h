@@ -11,6 +11,7 @@ class Subscription {
 public:
     Subscription();
     Subscription(IObservable* observable, const std::string& subscriber_id);
+    // TODO: remove these operations - they're here for debug purposes only
     Subscription(const Subscription& other);
     Subscription(Subscription&& other);
     // TODO: make Subscription::swap() and implement operator=(Subscription s);
@@ -25,7 +26,7 @@ public:
 private:
     std::shared_ptr<bool> valid_ = std::make_shared<bool>(false);
     IObservable* observable_{nullptr};
-    std::string subscriber_id_;
+    std::string subscriber_uuid_;
     std::string uuid_;
 };
 
