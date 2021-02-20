@@ -3,7 +3,9 @@
 project(tirx_tests)
 
 set(SOURCE
+    ComplexSubscriptions.cpp
     SimpleSource.cpp
+    Sources.cpp
     StreamFunctions.cpp
     TirxTests.cpp)
 

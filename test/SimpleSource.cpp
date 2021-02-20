@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "Observable.h"
+#include "tirx.h"
 
 TEST(Observable_Source_Int, Check_Next) {
     tirx::Observable<int> observable;

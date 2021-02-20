@@ -20,6 +20,7 @@ set(HEADER
     SingleThreadExecutor.h
     Subscriber.h
     Subscription.h
+    tirx.h
     ThreadPoolExecutor.h)
 
 add_library(tirx STATIC ${SOURCE} ${HEADER})
