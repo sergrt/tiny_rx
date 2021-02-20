@@ -2,7 +2,7 @@
 It implements following reactive programming entities:
 - **observable source** of any type (and of any number) of values
 - **subscriber** - lambda function or object with simple interface
-- **subscription** aalows to unsubscribe from sources
+- **subscription** allows to unsubscribe from sources
 - **executors** to process subscriptions in multi-threaded environment
 - **stream manipulating functions** like ```map```, ```filter```, ```reduce```. And it's very easy to add user-defined functions.
 
