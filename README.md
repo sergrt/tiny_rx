@@ -75,9 +75,13 @@ Different subscribers using the same executor will be sharing it's resources, in
 
 ### 4. Use ```filter``` in one thread and subscribe on thread pool
 You can even use different executors for stream functions and subscribers:
+Create executors:
 ```
 auto executor = std::make_shared<tirx::SingleThreadExecutor>();
 auto pool_executor = std::make_shared<tirx::ThreadPoolExecutor>(6);
+```
+Create observable, set ```SingleThreadExecutor``` for ```filter```, and ```ThreadPoolExecutor``` for subscriber:
+```
 auto source = tirx::Observable<int>();
 std::cout << "Current thread id = " << std::this_thread::get_id() << "\n";
 auto subscription = source
@@ -90,12 +94,14 @@ auto subscription = source
     .subscribe([](int value) {
         std::cout << value << " on thread " << std::this_thread::get_id() << "\n";
     });
-    
-    const auto values = std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8 };
-    for (auto v : values) {
-        source.next(v);
-    }
-    // ...
+```
+Observe on vector:
+```
+const auto values = std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8 };
+for (auto v : values) {
+    source.next(v);
+}
+// ...
 ```
 
 Some other examples can be found in tests, which are more like snippets than usual unit-tests.
