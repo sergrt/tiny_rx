@@ -8,7 +8,7 @@ It implements following reactive programming entities:
 
 Interface is quite similar to other reactive programming libraries. Some examples:
 
-### 1. Simple subscription example
+## 1. Simple subscription example
 Create observable source of ```int``` values:
 ```
 auto source = tirx::Observable<int>();
@@ -46,7 +46,7 @@ void on_error(std::string description) {
 ```
 and pass an object of this class as an argument to ```subscribe``` function.
 
-### 2. Use stream manipulating functions
+## 2. Use stream manipulating functions
 Create observable source of ```int``` values:
 ```
 auto source = tirx::Observable<int>();
@@ -58,7 +58,7 @@ auto subscription = source
     .subscribe([](int value) { std::cout << value << "\n"; });
 ```
 
-### 3. Subscribe on another thread
+## 3. Subscribe on another thread
 Create ```SingleThreadExecutor```:
 ```
 auto executor = std::make_shared<tirx::SingleThreadExecutor>();
@@ -88,7 +88,7 @@ auto another_subscription = source
 ```
 Different subscribers using the same executor will be sharing it's resources, in this particular case they will be executed sequentially in one thread.
 
-### 4. Use ```filter``` in one thread and subscribe on thread pool
+## 4. Use ```filter``` in one thread and subscribe on thread pool
 You can even use different executors for stream functions and subscribers:
 Create executors:
 ```
