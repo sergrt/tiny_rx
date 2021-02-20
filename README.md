@@ -1,4 +1,4 @@
-**tirx (tiny-rx)** is a compact open-source reactive programming library with simple and comprehensible threading model.
+**tirx ("tiny-rx")** is a compact open-source reactive programming library with simple and comprehensible threading model.
 It implements following reactive programming entities:
 - **observable source** of any type (and of any number) of values
 - **subscriber** - lambda function or object with simple interface
