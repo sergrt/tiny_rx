@@ -31,6 +31,21 @@ Unsubscribe:
 subscription.unsubscribe();
 ```
 
+```subscribe``` takes up to three lambdas - ```on_next```, ```on_end``` and ```on_error``` handlers.
+It's possible to use object instead of lambdas. Just make a class implementing functions:
+```
+void on_next(ObservableType value) {
+    // ...
+}
+void on_end() {
+    // ...
+}
+void on_error(std::string description) {
+    // ...
+}
+```
+and pass an object of this class as an argument to ```subscribe``` function.
+
 ### 2. Use stream manipulating functions
 Create observable source of ```int``` values:
 ```
