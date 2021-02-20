@@ -49,7 +49,7 @@ public:
     template<typename F, std::enable_if_t<std::is_object_v<F>, bool> = true>
     Subscription subscribe(std::shared_ptr<F> object) {
         return subscribe(
-            [object](T... args) { object->on_next(std::move(args...)); },
+            [object](T... args) { object->on_next(std::move(args)...); },
             [object]() { object->on_end(); },
             [object](std::string descr) {object->on_error(std::move(descr)); }
         );

@@ -79,3 +79,40 @@ TEST(Observable_Source_Int, Check_Object_Subscriber) {
 
     EXPECT_EQ(values, subscriber_object->get_result());
 }
+
+TEST(Observable_Source_Int, Check_Object_Subscriber_Two_Values) {
+
+    class SubscriberObject {
+    public:
+        void on_next(int v, std::string s) {
+            result_.push_back(s + std::to_string(v));
+        }
+        void on_end() {
+
+        }
+        void on_error(std::string description) {
+
+        }
+        auto get_result() const {
+            return result_;
+        }
+    private:
+        std::vector<std::string> result_;
+    };
+
+    tirx::Observable<int, std::string> observable;
+    auto subscriber_object = std::make_shared<SubscriberObject>();
+
+    const std::vector<int> int_values{ 1, 2, 3, 4, 5, 6 };
+    const std::vector<std::string> str_values{ "A", "B", "C", "D", "E", "F" };
+    const std::vector<std::string> etalon{ "A1", "B2", "C3", "D4", "E5", "F6" };
+
+    std::vector<int> results;
+    auto subscription = observable.subscribe(subscriber_object);
+
+    for (size_t i = 0; i < int_values.size(); ++i) {
+        observable.next(int_values[i], str_values[i]);
+    }
+
+    EXPECT_EQ(etalon, subscriber_object->get_result());
+}
