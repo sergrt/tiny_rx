@@ -25,6 +25,7 @@ const auto values = std::vector<int>{ 1, 2, 3, 4 };
 for (auto v : values) {
     source.next(v);
 }
+source.end();
 ```
 Unsubscribe:
 ```
@@ -116,6 +117,7 @@ const auto values = std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8 };
 for (auto v : values) {
     source.next(v);
 }
+source.end();
 // ...
 ```
 
