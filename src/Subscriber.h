@@ -72,6 +72,9 @@ public:
     }
 
     void on_end() {
+        if (!end_func_)
+            return;
+
         if (execution_policy_ == ExecutionPolicy::NoExecutor) {
             end_func_();
         } else {
@@ -80,6 +83,9 @@ public:
     }
 
     void on_error(std::string descr) {
+        if (!error_func_)
+            return;
+
         if (execution_policy_ == ExecutionPolicy::NoExecutor) {
             error_func_(descr);
         } else {
