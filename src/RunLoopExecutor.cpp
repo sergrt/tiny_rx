@@ -9,11 +9,11 @@ void RunLoopExecutor::add_task(std::function<void()> f) {
 
 void RunLoopExecutor::dispatch() {
     std::unique_lock<std::mutex> lock(mutex_);
-    const auto job = tasks_.front();
+    const auto task = tasks_.front();
     tasks_.pop_front();
     lock.unlock();
 
-    job();
+    task();
 }
 
 size_t RunLoopExecutor::size() const {

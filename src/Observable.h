@@ -96,7 +96,7 @@ public:
 
     void detach() {
         if (linked_subscription_)
-            linked_subscription_.value().unsubscribe();
+            linked_subscription_->unsubscribe();
     }
 
     void next(T... value) {
@@ -123,8 +123,7 @@ public:
             [map_func, proxy_observable](T... args) {
             auto res = map_func(args...);
             std::apply(&Observable::next, std::tuple_cat(make_tuple(proxy_observable.get()), res));
-        }
-        );
+        });
         proxy_observable->set_linked_info(subscription);
         return *proxy_observable;
     }
@@ -136,8 +135,7 @@ public:
             const auto filter_res = filter_func(args...);
             if (filter_res)
                 proxy_observable->next(args...);
-        }
-        );
+        });
         proxy_observable->set_linked_info(subscription);
         return *proxy_observable;
     }
@@ -156,8 +154,7 @@ public:
         [proxy_observable, result]() {
             proxy_observable->next(*result);
             proxy_observable->end();
-        }
-        );
+        });
         proxy_observable->set_linked_info(subscription);
         return *proxy_observable;
     }
@@ -172,7 +169,7 @@ private:
 
     std::list<Subscriber<T...>> subscribers_;
     std::list<Subscription> subscriptions_;
-    const std::string uuid_ = utils::get_uuid(); // For debug
+    const std::string uuid_ = utils::get_uuid(); // For debug purposes
 
     // linked - means that this observable is a proxy observable
     // made to allow subscribers to subscribe on map, filter or other function

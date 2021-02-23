@@ -39,7 +39,7 @@ Subscription& Subscription::operator=(Subscription other) noexcept {
     return *this;
 }
 
-void Subscription::swap(Subscription& other) {
+void Subscription::swap(Subscription& other) noexcept {
     std::swap(valid_, other.valid_);
     std::swap(observable_, other.observable_);
     std::swap(subscriber_uuid_, other.subscriber_uuid_);

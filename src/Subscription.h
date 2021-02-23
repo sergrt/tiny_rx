@@ -19,10 +19,10 @@ public:
 
     void reset();
     void unsubscribe();
-    std::string get_uuid() const;
+    [[nodiscard]] std::string get_uuid() const;
 
 private:
-    void swap(Subscription& other);
+    void swap(Subscription& other) noexcept;
 
     std::shared_ptr<bool> valid_ = std::make_shared<bool>(false);
     IObservable* observable_{nullptr};
