@@ -15,11 +15,11 @@ template<typename ...T>
 class Subscriber {
 public:
     Subscriber() : uuid_{ utils::get_uuid() } {
-        log(LogSeverity::Trace, "Constructing subscriber " + uuid_);
+        trace_call(__PRETTY_FUNCTION__, uuid_);
     }
 
     ~Subscriber() {
-        log(LogSeverity::Trace, "Destructing subscriber " + uuid_);
+        trace_call(__PRETTY_FUNCTION__, uuid_);
     }
 
     Subscriber(const Subscriber& other) = delete;
@@ -28,13 +28,13 @@ public:
 
     Subscriber(Subscriber&& other) noexcept
         : Subscriber() {
-        log(LogSeverity::Trace, "Move constructing subscriber " + other.uuid_);
+        trace_call(__PRETTY_FUNCTION__, other.uuid_);
         other.swap(*this);
     }
 
     // We want no copy assignment, so use explicit && here
     Subscriber& operator=(Subscriber&& other) noexcept {
-        log(LogSeverity::Trace, "Move operator= subscriber " + other.uuid_);
+        trace_func(__PRETTY_FUNCTION__, other.uuid_);
         other.swap(this);
         return *this;
     }

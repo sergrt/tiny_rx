@@ -18,7 +18,7 @@ template<typename ...T>
 class Observable : public IObservable, public std::enable_shared_from_this<IObservable> {
 public:
     Observable() {
-        log(LogSeverity::Trace, "Constructing observable " + uuid_);
+        trace_call(__PRETTY_FUNCTION__, uuid_);
         set_default_params();
     }
 
@@ -34,7 +34,7 @@ public:
     }
 
     ~Observable() override {
-        log(LogSeverity::Trace, "Destructing observable " + uuid_);
+        trace_call(__PRETTY_FUNCTION__, uuid_);
         for (auto& s : subscriptions_) {
             s.reset();
         }
