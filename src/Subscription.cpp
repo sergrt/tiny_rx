@@ -9,7 +9,7 @@ using namespace utils;
 Subscription::Subscription() {
     uuid_ = utils::get_uuid();
     trace_call(__PRETTY_FUNCTION__, uuid_);
-};
+}
 
 Subscription::Subscription(IObservable* observable, const std::string& subscriber_id) {
     uuid_ = utils::get_uuid();
