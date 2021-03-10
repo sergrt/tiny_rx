@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #ifdef _MSC_VER
 #define __PRETTY_FUNCTION__ __FUNCSIG__
@@ -42,10 +43,11 @@ void log(LogSeverity severity, T... args) {
 inline std::string format_func_name(std::string func_name) {
     static constexpr size_t max_func_name_len = 80;
     static constexpr std::string_view ellipsis = "<...>";
-    static constexpr std::string_view trim_prefix = "__thiscall ";
+    static const std::vector<std::string_view> trim_prefix{ "__thiscall ", "__cdecl " };
 
-    if (func_name.substr(0, trim_prefix.size()) == trim_prefix) {
-        func_name.erase(0, trim_prefix.size());
+    for (const auto& prefix : trim_prefix) {
+        if (func_name.substr(0, prefix.size()) == prefix)
+            func_name.erase(0, prefix.size());
     }
 
     if (func_name.size() > max_func_name_len) {
