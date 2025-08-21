@@ -2,15 +2,15 @@
 
 #include "IExecutor.h"
 
-#include <deque>
-#include <vector>
-#include <functional>
-#include <thread>
-#include <mutex>
 #include <atomic>
 #include <condition_variable>
+#include <deque>
+#include <functional>
+#include <mutex>
+#include <thread>
+#include <vector>
 
-namespace tirx {
+namespace tiny_rx {
 
 class ThreadPoolExecutor : public IExecutor {
 public:
@@ -31,4 +31,4 @@ private:
     size_t pool_size_ = std::thread::hardware_concurrency();
 };
 
-}
+} // namespace tiny_rx

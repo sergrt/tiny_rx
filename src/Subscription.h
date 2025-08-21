@@ -3,14 +3,13 @@
 #include "IObservable.h"
 
 #include <memory>
-#include <string>
 
-namespace tirx {
+namespace tiny_rx {
 
 class Subscription {
 public:
     Subscription();
-    Subscription(IObservable* observable, const std::string& subscriber_id);
+    Subscription(IObservable* observable, const Guid& subscriber_id);
     // TODO: remove these operations - they're here for debug purposes only
     Subscription(const Subscription& other);
     Subscription(Subscription&& other) noexcept;
@@ -19,15 +18,15 @@ public:
 
     void reset();
     void unsubscribe();
-    [[nodiscard]] std::string get_uuid() const;
+    [[nodiscard]] Guid get_uuid() const;
 
 private:
     void swap(Subscription& other) noexcept;
 
     std::shared_ptr<bool> valid_ = std::make_shared<bool>(false);
     IObservable* observable_{nullptr};
-    std::string subscriber_uuid_;
-    std::string uuid_;
+    Guid subscriber_uuid_{};
+    Guid uuid_{};
 };
 
-}
+} // namespace tiny_rx

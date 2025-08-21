@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"
+#include "tiny_rx.h"
 
-#include "tirx.h"
+#include <gtest/gtest.h>
 
 namespace {
 auto upper = [](std::string s) {
@@ -12,7 +12,7 @@ auto upper = [](std::string s) {
 }
 
 TEST(Observable_Stream_Functions, Check_Map) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<int> etalon{ 1, 4, 9, 16, 25, 36, 49, 64 };
@@ -30,7 +30,7 @@ TEST(Observable_Stream_Functions, Check_Map) {
 }
 
 TEST(Observable_Stream_Functions, Check_Map_Different_Types) {
-    tirx::Observable<int, std::string> observable;
+    tiny_rx::Observable<int, std::string> observable;
 
     const std::vector<int> int_values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<std::string> string_values{ "a" , "b", "c", "d", "e", "f", "g", "h" };
@@ -57,7 +57,7 @@ TEST(Observable_Stream_Functions, Check_Map_Different_Types) {
 }
 
 TEST(Observable_Stream_Functions, Check_Filter) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<int> etalon{ 1, 3, 5, 7 };
@@ -77,7 +77,7 @@ TEST(Observable_Stream_Functions, Check_Filter) {
 }
 
 TEST(Observable_Stream_Functions, Check_Filter_Different_types) {
-    tirx::Observable<int, std::string> observable;
+    tiny_rx::Observable<int, std::string> observable;
 
     const std::vector<int> int_values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<std::string> string_values{ "A" , "b", "C", "d", "E", "f", "G", "H" };
@@ -104,7 +104,7 @@ TEST(Observable_Stream_Functions, Check_Filter_Different_types) {
 }
 
 TEST(Observable_Stream_Functions, Check_Reduce) {
-    tirx::Observable<int> int_observable;
+    tiny_rx::Observable<int> int_observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     constexpr int etalon = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8;
@@ -127,7 +127,7 @@ TEST(Observable_Stream_Functions, Check_Reduce) {
 }
 
 TEST(Observable_Stream_Functions, Check_Reduce_Many_Values) {
-    tirx::Observable<int, int> observable;
+    tiny_rx::Observable<int, int> observable;
 
     const std::vector<int> first_values{ 1, 2, 3, 4};
     const std::vector<int> second_values{ 10, 20, 30, 40 };
@@ -150,4 +150,3 @@ TEST(Observable_Stream_Functions, Check_Reduce_Many_Values) {
 
     EXPECT_EQ(etalon, result);
 }
-

@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace tirx {
+namespace tiny_rx {
 
 class IExecutor {
 public:
@@ -10,4 +10,4 @@ public:
     virtual void add_task(std::function<void()> f) = 0;
 };
 
-}
+} // namespace tiny_rx

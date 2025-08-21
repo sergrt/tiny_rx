@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Guid.h"
+
 #include <iostream>
 #include <vector>
 
@@ -7,7 +9,7 @@
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
-namespace tirx::utils {
+namespace tiny_rx::utils {
 
 enum class LogSeverity {
     Trace = 0,
@@ -17,6 +19,11 @@ enum class LogSeverity {
     Error,
     Fatal
 };
+
+inline std::ostream& operator<<(std::ostream& stream, const Guid& guid) {
+    stream << guid.to_string();
+    return stream;
+}
 
 template <typename Arg, typename... Args>
 void log_out(std::ostream& out, Arg&& arg, Args&&... args) {
@@ -62,4 +69,4 @@ void trace_call(std::string func_name, T... args) {
     log(LogSeverity::Trace, format_func_name(func_name), args...);
 }
 
-}
+} // namespace tiny_rx::utils

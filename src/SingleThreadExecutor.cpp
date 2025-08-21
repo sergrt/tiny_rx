@@ -1,6 +1,6 @@
 #include "SingleThreadExecutor.h"
 
-namespace tirx {
+namespace tiny_rx {
 
 SingleThreadExecutor::SingleThreadExecutor() {
     thread_ = std::thread([this]() {
@@ -33,4 +33,4 @@ void SingleThreadExecutor::add_task(std::function<void()> f) {
     cond_var_.notify_all();
 }
 
-}
+} // namespace tiny_rx

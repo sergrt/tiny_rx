@@ -8,11 +8,11 @@
 #include "Subscription.h"
 
 #include <list>
-#include <string>
 #include <memory>
 #include <optional>
+#include <string>
 
-namespace tirx {
+namespace tiny_rx {
 
 template<typename ...T>
 class Observable : public IObservable, public std::enable_shared_from_this<IObservable> {
@@ -57,7 +57,7 @@ public:
 
     template<typename ...F>
     Subscription subscribe(F... args) {
-        const std::size_t size = sizeof...(F);
+        constexpr std::size_t size = sizeof...(F);
 
         subscribers_.emplace_back(Subscriber<T...>());
         auto& subscriber = subscribers_.back();
@@ -77,7 +77,7 @@ public:
         return subscriptions_.back();
     }
 
-    void unsubscribe(const std::string& uuid) override {
+    void unsubscribe(const Guid& uuid) override {
         for (auto i = subscribers_.begin(); i != subscribers_.end(); ++i) {
             if (uuid == i->get_uuid()) {
                 subscribers_.erase(i);
@@ -169,11 +169,11 @@ private:
 
     std::list<Subscriber<T...>> subscribers_;
     std::list<Subscription> subscriptions_;
-    const std::string uuid_ = utils::get_uuid(); // For debug purposes
+    const Guid uuid_{}; // For debug purposes
 
     // linked - means that this observable is a proxy observable
     // made to allow subscribers to subscribe on map, filter or other function
     std::optional<Subscription> linked_subscription_;
 };
 
-}
+} // namespace tiny_rx

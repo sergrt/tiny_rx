@@ -1,11 +1,11 @@
-#include "gtest/gtest.h"
+#include "tiny_rx.h"
 
-#include "tirx.h"
+#include <gtest/gtest.h>
 
 #include <thread>
 
 TEST(Observable_Sources, Vector_Source) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     std::vector<int> results;

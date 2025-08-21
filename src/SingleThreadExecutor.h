@@ -2,14 +2,14 @@
 
 #include "IExecutor.h"
 
-#include <deque>
-#include <functional>
-#include <thread>
-#include <mutex>
 #include <atomic>
 #include <condition_variable>
+#include <deque>
+#include <functional>
+#include <mutex>
+#include <thread>
 
-namespace tirx {
+namespace tiny_rx {
 
 class SingleThreadExecutor : public IExecutor {
 public:
@@ -30,4 +30,4 @@ private:
     std::atomic<bool> stop_thread_{ false };
 };
 
-}
+} // namespace tiny_rx

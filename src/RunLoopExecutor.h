@@ -6,7 +6,7 @@
 #include <functional>
 #include <mutex>
 
-namespace tirx {
+namespace tiny_rx {
 
 class RunLoopExecutor : public IExecutor {
 public:
@@ -24,5 +24,5 @@ private:
     mutable std::mutex mutex_;
 };
 
-}
+} // namespace tiny_rx
 

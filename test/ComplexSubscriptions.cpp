@@ -1,9 +1,9 @@
-#include "gtest/gtest.h"
+#include "tiny_rx.h"
 
-#include "tirx.h"
+#include <gtest/gtest.h>
 
 TEST(Observable_Complex_Subscription, Check_Map_Filter) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<int> etalon{ 18, 21, 24 };
@@ -25,7 +25,7 @@ TEST(Observable_Complex_Subscription, Check_Map_Filter) {
 }
 
 TEST(Observable_Complex_Subscription, Check_Filter_Map) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<int> etalon{ 3, 9, 15, 21 };
@@ -47,7 +47,7 @@ TEST(Observable_Complex_Subscription, Check_Filter_Map) {
 }
 
 TEST(Observable_Complex_Subscription, Check_Map_Subscribe_Unsubscribe_Map_Removed) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<int> etalon_map{ 3, 6, 9, 12, 15, 18, 21, 24 };
@@ -81,7 +81,7 @@ TEST(Observable_Complex_Subscription, Check_Map_Subscribe_Unsubscribe_Map_Remove
 }
 
 TEST(Observable_Complex_Subscription, Check_Map_Subscribe_Unsubscribe_Map_Not_Removed) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     const std::vector<int> etalon_map{ 3, 6, 9, 12, 15, 18, 21, 24 };

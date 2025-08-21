@@ -1,13 +1,14 @@
 ﻿cmake_minimum_required(VERSION 3.10)
 
-project(tirx)
+project(tiny_rx)
 
 set(SOURCE
     Guid.cpp
     RunLoopExecutor.cpp
     SingleThreadExecutor.cpp
     Subscription.cpp
-    ThreadPoolExecutor.cpp)
+    ThreadPoolExecutor.cpp
+)
 
 set(HEADER
     ExecutionPolicy.h
@@ -20,9 +21,9 @@ set(HEADER
     SingleThreadExecutor.h
     Subscriber.h
     Subscription.h
-    tirx.h
-    ThreadPoolExecutor.h)
+    tiny_rx.h
+    ThreadPoolExecutor.h
+)
 
-add_library(tirx STATIC ${SOURCE} ${HEADER})
-
-set_property(TARGET tirx PROPERTY CXX_STANDARD 17)
+add_library(${PROJECT_NAME} STATIC ${SOURCE} ${HEADER})
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)

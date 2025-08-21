@@ -2,17 +2,15 @@
 #include "Guid.h"
 #include "Log.h"
 
-namespace tirx {
+namespace tiny_rx {
 
 using namespace utils;
 
 Subscription::Subscription() {
-    uuid_ = utils::get_uuid();
     trace_call(__PRETTY_FUNCTION__, uuid_);
 }
 
-Subscription::Subscription(IObservable* observable, const std::string& subscriber_id) {
-    uuid_ = utils::get_uuid();
+Subscription::Subscription(IObservable* observable, const Guid& subscriber_id) {
     trace_call(__PRETTY_FUNCTION__, uuid_);
     observable_ = observable;
     subscriber_uuid_ = subscriber_id;
@@ -34,7 +32,7 @@ Subscription::Subscription(Subscription&& other) noexcept
 }
 
 Subscription& Subscription::operator=(Subscription other) noexcept {
-    trace_call(__PRETTY_FUNCTION__, uuid_, "other uuid_ = " + other.uuid_);
+    trace_call(__PRETTY_FUNCTION__, uuid_, "other uuid_ = " + other.uuid_.to_string());
     other.swap(*this);
     return *this;
 }
@@ -66,8 +64,8 @@ void Subscription::unsubscribe() {
     reset();
 }
 
-std::string Subscription::get_uuid() const {
+Guid Subscription::get_uuid() const {
     return subscriber_uuid_;
 }
 
-}
+} // namespace tiny_rx

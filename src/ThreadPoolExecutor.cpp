@@ -1,6 +1,8 @@
 #include "ThreadPoolExecutor.h"
 
-namespace tirx {
+#include "Log.h"
+
+namespace tiny_rx {
 
 ThreadPoolExecutor::ThreadPoolExecutor(size_t pool_size) : pool_size_(pool_size) {
     for (size_t x = 0; x < pool_size_; ++x) {
@@ -18,7 +20,11 @@ ThreadPoolExecutor::ThreadPoolExecutor(size_t pool_size) : pool_size_(pool_size)
 
                 cond_var_.notify_all();
 
-                task();
+                try{
+                    task();
+                } catch(std::exception& e) {
+                    tiny_rx::utils::log_out(std::cerr, "ThreadPoolExecutor exception on taslk: ", e.what());
+                }
             }
         }));
     }
@@ -39,4 +45,4 @@ void ThreadPoolExecutor::add_task(std::function<void()> f) {
     cond_var_.notify_all();
 }
 
-}
+} // namespace tiny_rx

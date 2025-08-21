@@ -1,6 +1,6 @@
 #include "RunLoopExecutor.h"
 
-namespace tirx {
+namespace tiny_rx {
 
 void RunLoopExecutor::add_task(std::function<void()> f) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -21,4 +21,4 @@ size_t RunLoopExecutor::size() const {
     return tasks_.size();
 }
 
-}
+} // namespace tiny_rx

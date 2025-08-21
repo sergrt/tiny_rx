@@ -1,20 +1,20 @@
 #pragma once
 
 #include "ExecutionPolicy.h"
-#include "IExecutor.h"
 #include "Guid.h"
+#include "IExecutor.h"
 #include "Log.h"
 
 #include <functional>
 
-namespace tirx {
+namespace tiny_rx {
 
 using namespace utils;
 
 template<typename ...T>
 class Subscriber {
 public:
-    Subscriber() : uuid_{ utils::get_uuid() } {
+    Subscriber() {
         trace_call(__PRETTY_FUNCTION__, uuid_);
     }
 
@@ -39,7 +39,7 @@ public:
         return *this;
     }
 
-    [[nodiscard]] std::string get_uuid() const {
+    [[nodiscard]] Guid get_uuid() const {
         return uuid_;
     }
 
@@ -87,9 +87,9 @@ public:
             return;
 
         if (execution_policy_ == ExecutionPolicy::NoExecutor) {
-            error_func_(descr);
+            error_func_(std::move(descr));
         } else {
-            executor_->add_task(std::bind(error_func_, descr));
+            executor_->add_task(std::bind(error_func_, std::move(descr)));
         }
     }
 
@@ -103,7 +103,7 @@ private:
         std::swap(executor_, other.executor_);
     }
 
-    std::string uuid_;
+    Guid uuid_{};
     std::function<void(T...)> func_;
     std::function<void()> end_func_;
     std::function<void(std::string)> error_func_;
@@ -111,4 +111,4 @@ private:
     std::shared_ptr<IExecutor> executor_;
 };
 
-}
+} // namespace tiny_rx

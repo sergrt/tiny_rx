@@ -1,9 +1,18 @@
 #pragma once
 
+#include <array>
 #include <string>
 
-namespace tirx::utils {
+namespace tiny_rx {
 
-std::string get_uuid();
+class Guid {
+public:
+    Guid();
+    std::string to_string() const;
+    bool operator==(const Guid& other) const;
 
-}
+private:
+    std::array<uint8_t, 16> data_{};
+};
+
+} // namespace tiny_rx

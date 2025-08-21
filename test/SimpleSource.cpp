@@ -1,9 +1,9 @@
-#include "gtest/gtest.h"
+#include "tiny_rx.h"
 
-#include "tirx.h"
+#include <gtest/gtest.h>
 
 TEST(Observable_Source_Int, Check_Next) {
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
     std::vector<int> results;
@@ -31,7 +31,7 @@ TEST(Observable_Source_Struct, Check_Next) {
         std::shared_ptr<int> y_ = std::make_shared<int>(20);
     };
 
-    tirx::Observable<SimpleClass> observable;
+    tiny_rx::Observable<SimpleClass> observable;
 
     const std::vector<SimpleClass> values{ {1, 2}, {3, 4}, {5, 6} };
     std::vector<SimpleClass> results;
@@ -66,7 +66,7 @@ TEST(Observable_Source_Int, Check_Object_Subscriber) {
         std::vector<int> result_;
     };
 
-    tirx::Observable<int> observable;
+    tiny_rx::Observable<int> observable;
     auto subscriber_object = std::make_shared<SubscriberObject>();
 
     const std::vector<int> values{ 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -100,7 +100,7 @@ TEST(Observable_Source_Int, Check_Object_Subscriber_Two_Values) {
         std::vector<std::string> result_;
     };
 
-    tirx::Observable<int, std::string> observable;
+    tiny_rx::Observable<int, std::string> observable;
     auto subscriber_object = std::make_shared<SubscriberObject>();
 
     const std::vector<int> int_values{ 1, 2, 3, 4, 5, 6 };
