@@ -6,6 +6,7 @@
 #include "log.h"
 
 #include <functional>
+#include <memory>
 
 namespace tiny_rx {
 
