@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IExecutor.h"
+#include "iexecutor.h"
 
 #include <atomic>
 #include <condition_variable>

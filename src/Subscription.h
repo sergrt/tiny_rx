@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IObservable.h"
+#include "iobservable.h"
 
 #include <memory>
 

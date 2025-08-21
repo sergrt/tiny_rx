@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ExecutionPolicy.h"
-#include "Guid.h"
-#include "IExecutor.h"
-#include "Log.h"
+#include "execution_policy.h"
+#include "guid.h"
+#include "iexecutor.h"
+#include "log.h"
 
 #include <functional>
 

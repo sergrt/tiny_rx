@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ExecutionPolicy.h"
-#include "Subscriber.h"
-#include "IExecutor.h"
-#include "Guid.h"
-#include "IObservable.h"
-#include "Subscription.h"
+#include "execution_policy.h"
+#include "guid.h"
+#include "iexecutor.h"
+#include "iobservable.h"
+#include "subscriber.h"
+#include "subscription.h"
 
 #include <list>
 #include <memory>

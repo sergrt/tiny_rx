@@ -3,26 +3,26 @@
 project(tiny_rx)
 
 set(SOURCE
-    Guid.cpp
-    RunLoopExecutor.cpp
-    SingleThreadExecutor.cpp
-    Subscription.cpp
-    ThreadPoolExecutor.cpp
+    guid.cpp
+    run_loop_executor.cpp
+    single_thread_executor.cpp
+    subscription.cpp
+    thread_pool_executor.cpp
 )
 
 set(HEADER
-    ExecutionPolicy.h
-    Guid.h
-    IExecutor.h
-    IObservable.h
-    Log.h
-    Observable.h
-    RunLoopExecutor.h
-    SingleThreadExecutor.h
-    Subscriber.h
-    Subscription.h
+    execution_policy.h
+    guid.h
+    iexecutor.h
+    iobservable.h
+    log.h
+    observable.h
+    run_loop_executor.h
+    single_thread_executor.h
+    subscriber.h
+    subscription.h
     tiny_rx.h
-    ThreadPoolExecutor.h
+    thread_pool_executor.h
 )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE} ${HEADER})

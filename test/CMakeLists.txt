@@ -15,11 +15,11 @@ add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
 set(SOURCE
-    ComplexSubscriptions.cpp
-    SimpleSource.cpp
-    Sources.cpp
-    StreamFunctions.cpp
-    TinyRxTests.cpp
+    complex_subscriptions.cpp
+    simple_source.cpp
+    sources.cpp
+    stream_functions.cpp
+    tiny_rx_tests.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE})

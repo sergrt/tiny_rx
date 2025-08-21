@@ -1,6 +1,7 @@
-#include "Subscription.h"
-#include "Guid.h"
-#include "Log.h"
+#include "subscription.h"
+
+#include "guid.h"
+#include "log.h"
 
 namespace tiny_rx {
 
