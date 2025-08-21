@@ -23,7 +23,7 @@ set(SOURCE
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE})
-
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY
   COMPILE_DEFINITIONS $<$<CONFIG:Debug>:LOG_SEVERITY=tiny_rx::utils::LogSeverity::Trace>
 )
