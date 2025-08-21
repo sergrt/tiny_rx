@@ -1,4 +1,4 @@
-**tirx ("tiny-rx")** is a compact open-source reactive programming C++ library with simple and comprehensible threading model.
+**tiny-rx** is a compact open-source reactive programming C++ library with simple and comprehensible threading model.
 It implements following reactive programming entities:
 - **observable source** of any type (and of any number) of values
 - **subscriber** - lambda function or object with simple interface
@@ -11,7 +11,7 @@ Interface is quite similar to other reactive programming libraries. Some example
 ## 1. Simple subscription example
 Create observable source of ```int``` values:
 ```
-auto source = tirx::Observable<int>();
+auto source = tiny_rx::Observable<int>();
 ```
 Subscribe on it:
 ```
@@ -50,7 +50,7 @@ and pass an object of this class as an argument to ```subscribe``` function.
 ## 2. Use stream manipulating functions
 Create observable source of ```int``` values:
 ```
-auto source = tirx::Observable<int>();
+auto source = tiny_rx::Observable<int>();
 ```
 Map values by doubling each value, and subscribe:
 ```
@@ -62,11 +62,11 @@ auto subscription = source
 ## 3. Subscribe on another thread
 Create ```SingleThreadExecutor```:
 ```
-auto executor = std::make_shared<tirx::SingleThreadExecutor>();
+auto executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
 ```
 Create observable source of ```int``` values:
 ```
-auto source = tirx::Observable<int>();
+auto source = tiny_rx::Observable<int>();
 ```
 Subscribe with executor - subscriber functions will be executed on separate thread:
 ```
@@ -93,12 +93,12 @@ Different subscribers using the same executor will be sharing it's resources, in
 You can even use different executors for stream functions and subscribers:
 Create executors:
 ```
-auto executor = std::make_shared<tirx::SingleThreadExecutor>();
-auto pool_executor = std::make_shared<tirx::ThreadPoolExecutor>(6);
+auto executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
+auto pool_executor = std::make_shared<tiny_rx::ThreadPoolExecutor>(6);
 ```
 Create observable, set ```SingleThreadExecutor``` for ```filter```, and ```ThreadPoolExecutor``` for subscriber:
 ```
-auto source = tirx::Observable<int>();
+auto source = tiny_rx::Observable<int>();
 std::cout << "Current thread id = " << std::this_thread::get_id() << "\n";
 auto subscription = source
     .subscribe_on(executor)
