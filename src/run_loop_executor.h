@@ -8,6 +8,8 @@
 
 namespace tiny_rx {
 
+// Placeholder to make executor on a framework run loop
+// (e.g. Qt event loop, NoesisGui drawing loop etc.)
 class RunLoopExecutor : public IExecutor {
 public:
     RunLoopExecutor(const RunLoopExecutor&) = delete;
