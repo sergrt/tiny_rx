@@ -46,7 +46,7 @@ Note that call to `source.end();` does nothing for now. When we had subscribed t
 - `on_next()` - will be executed on new value arrval
 - `on_error()` - will be executed if the observable reports that some error had happened
 - `on_end()` - will be executed on source data end
-- 
+
 It is also possible to use object instead of lambdas to produce code with low coupling.  Just make a class implementing functions:
 ```c++
 void on_next(ObservableType value) {
