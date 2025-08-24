@@ -16,8 +16,7 @@ TEST(Observable_Sources, Vector_Source) {
 
     std::thread thread([&observable, &values] {
         for (const auto v : values) {
-            observable.next(v);
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            observable.next(v);;
         }
         observable.end();
     });
