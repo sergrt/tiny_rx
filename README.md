@@ -1,69 +1,78 @@
-**`tiny_rx`** is a c++ reactive programming library
+**`tiny_rx`** is a compact reactive programming C++ library
 - [`tiny_rx` description](#tiny_rx-description)
 - [Overview](#overview)
   - [Features](#features)
 - [Usage](#usage)
   - [Quick start example](#quick-start-example)
   - [Use stream manipulating functions](#use-stream-manipulating-functions)
-    - [Using `map()` function](#using-map-function)
-    - [Using `filter()` function](#using-filter-function)
-    - [Using `reduce()` function](#using-reduce-function)
-    - [Combination of functions](#combination-of-functions)
-    - [Subscriptions to intermediate result](#subscriptions-to-intermediate-result)
+    - [Using `map()`](#using-map)
+    - [Using `filter()`](#using-filter)
+    - [Using `reduce()`](#using-reduce)
+    - [Combining functions](#combining-functions)
+    - [Subscribing to intermediate result](#subscribing-to-intermediate-result)
 - [Multithreading](#multithreading)
   - [Overview](#overview-1)
-  - [Same thread as values source](#same-thread-as-values-source)
+  - [Same thread as the value source](#same-thread-as-the-value-source)
   - [Work in another thread](#work-in-another-thread)
-  - [Work in thread pool](#work-in-thread-pool)
+  - [Work in a thread pool](#work-in-a-thread-pool)
   - [Run loop executor](#run-loop-executor)
   - [`map()`, `filter()` and `reduce()` on different threads](#map-filter-and-reduce-on-different-threads)
 
 # `tiny_rx` description
 
-**`tiny-rx`** is a compact open-source reactive programming C++ library with simple and comprehensible threading model.
+**`tiny_rx`** is a compact open-source reactive programming C++ library with a simple and comprehensible threading model.
 
 # Overview
-Reactive programming is a programming paradigm centered around asynchronous data streams and the propagation of changes. It provides a declarative approach to handle events and data that change over time, making code more readable, maintainable, and scalable, especially in applications that require responsiveness and real-time data processing.
+Reactive programming is a paradigm centered around asynchronous data streams and the propagation of changes. It provides a declarative approach to handle events and data that change over time, making code more readable, maintainable, and scalable, especially in applications that require responsiveness and real-time data processing.
 
-Some frameworks have a luxury of some sort of notifications, e.g. `Qt`'s signal/slot mechanism. It is a handy tool to pass notifications, react on appearing of values, process stream data etc.
+Some frameworks have the luxury of built-in notification mechanisms, e.g. `Qt`’s signal/slot system. It is a handy tool for passing notifications, reacting to new values, and processing stream data.
 
-The problems are that not every framework provide such a tool. Additionally, `Qt`, for example, relies on moc compiler. And, more important, frameworks that provide such behavior are usually UI frameworks. So the most of the time there is no way to use them in backend or middleware.
+The problems are:
+- Not every framework provides such tools
+- Some frameworks use additional tools. `Qt`, for example, relies on the `moc` compiler
+- Frameworks that do provide such features are usually UI-oriented, making them unsuitable for backend or middleware code
 
-Another problem of such notifications is that they are targeting single events and usually not really suitable to handle streams of data.
+Another issue is that such notifications typically target single events and are not well-suited for handling continuous data streams.
 
-`tiny_rx` targets all of these issues:
-- easy to use notification-response mechanics
-- free from any dependencies and additional compilation steps
-- suitable to be used on every layer: UI (especially Immediate-mode UI libraries), backend, middleware
-- provides `map()`, `filter()` and `reduce()` functions to work with streams of data
-- ready to be used in multithreaded environment for better resources utilization
+**`tiny_rx`** addresses all these issues:
+- Easy-to-use notification/response mechanics
+- No dependencies or extra compilation steps
+- Suitable for any layer: UI (especially Immediate-mode UI libraries), backend, or middleware
+- Provides tools for handling not only single events but also continuous streams
+- Threading model is explicit, clear, and easy to control
 
 ## Features
-**tiny_rx** implements following reactive programming entities:
-- **observable source** of any type (and number) of values. This is what is called *observable* or *subject* in different sources
-- **subscriber** is an object with callables (lambda function or object with simple interface), implementing code execution on new value arrival, on error and on data stream ending
-- **subscription** abstraction to manipulate stream data subscription, e.g. unsubscribe or resubscribe to stream
-- **executors** to process subscriptions in multi-threaded environment
-- **stream manipulating functions** like ```map```, ```filter```, ```reduce```. And it's very easy to add user-defined functions.
+- Functional-style stream manipulation: `map()`, `filter()`, `reduce()` etc.
+- Clear multithreading support with different executors
+- Simple and lightweight API
+- No external dependencies
 
-Interface is based on some well-known reactive programming librarises, so it is easy to migrate and it has very gentle learning curve. 
+**`tiny_rx`** implements the following reactive programming entities:
+- **observable source** of any type (and number) of values. This is what is commonly called *observable* or *subject* in different sources
+- **subscriber** is an object with callables (a lambda function or an object with a simple interface) that execute code when a new value arrives, an error occurs, or the data stream ends
+- **subscription** is an abstraction that manages stream data subscriptions, e.g., unsubscribe or resubscribe to a stream
+- **executors** allow processing subscriptions in a multi-threaded environment
+- **functional-style stream manipulation**: `map()`, `filter()`, `reduce()` functions
+
+The interface is based on well-known reactive programming libraries, making it easy to migrate with a very gentle learning curve. 
 
 # Usage
 
 ## Quick start example
-Let's say we have some source of integer values, and want to print them out to console.
-First, create ad **observable** source of ```int``` values:
+Let's say we have a source of integer values and want to print them to the console
+First, create an **observable** source of `int` values:
 ```c++
 auto source = tiny_rx::Observable<int>();
 ```
-After that we can subscribe on this observable (`source`) and get the subscription:
+Next, we can subscribe to this observable `source` and get a subscription:
 ```c++
 auto subscription = source.subscribe([](int value) {
     std::cout << value << "\n";
 });
 ```
-The lambda function (1st parameter of the `subscribe()` function) is `on_next()` callable. It will be executed each time new value arrives from the `source`.
-Let's push some values (from vector) to the `source`. Each of this value will be printed to the console:
+The lambda function (the 1st parameter of the `subscribe()` function) is the `on_next()` callable. It will be executed each time a new value arrives from the source.
+
+Now let's push some values (from a vector) to the source. Each of these values will be printed to the console:
 ```c++
 const auto values = std::vector<int>{ 1, 2, 3, 4 };
 for (auto v : values) {
@@ -71,17 +80,16 @@ for (auto v : values) {
 }
 source.end();
 ```
-If we need to unsubscribe from `source` we can call `unsubscribe()` method of the `subscription`:
+If we need to unsubscribe from the `source`, we can call the `unsubscribe()` method of the `subscription`:
 ```c++
 subscription.unsubscribe();
 ```
-Note that call to `source.end();` does nothing for now. When we had subscribed to the `source` we specified ony one callable, the first one. This is `on_next` function. You can specify up to three callables:
-- `on_next()` - will be executed on new value arrval
-- `on_end()` - will be executed on source data end
-- `on_error()` - will be executed if the observable reports that some error had happened
+Note that the call to `source.end()` currently does nothing. When we subscribed to the `source`, we specified only one callable - `on_next()`. You can specify up to three callables:
+- `on_next()` - executed on new value arrival
+- `on_end()` - executed when the source stream ends
+- `on_error()` - executed if the observable reports an error
 
-
-It is also possible to use object instead of lambdas to produce code with low coupling.  Just make a class implementing functions:
+It is also possible to use an object instead of lambdas to produce code with lower coupling. Just create a class that implements these functions:
 ```c++
 void on_next(const ObservableType& value) {
     // ...
@@ -93,10 +101,12 @@ void on_error(const std::string& description) {
     // ...
 }
 ```
-Pass an object of this class as an argument to `subscribe()` function.
+Pass an object of this class as an argument to the `subscribe()` function.
+
+You can implement `on_next()` with the argument passed by reference or by value.
 
 ## Use stream manipulating functions
-Reactive pprogramming paradigm usually implies providing three functions for stream manipulation:
+The reactive programming paradigm usually provides three core functions for stream manipulation:
 - `map()`
 
     _Purpose_: Transforms each element of a collection and returns a new collection containing the results of the transformation.
@@ -121,9 +131,9 @@ Reactive pprogramming paradigm usually implies providing three functions for str
 
     _Example_: Summing all numbers in a list: `[1, 2, 3]` becomes `6`.
 
-Some examples below.
+Some examples are shown below.
 
-All the examples uses observable source of `int` values, as before:
+All examples use an observable source of `int` values, as before:
 ```c++
 auto source = tiny_rx::Observable<int>();
 const auto values = std::vector<int>{ 1, 2, 3, 4 };
@@ -134,9 +144,9 @@ for (auto v : values) {
 source.end();
 ```
 
-### Using `map()` function
-Let's double each value
-Map values by doubling each value, and subscribe:
+### Using `map()`
+Let's double each value.
+Map values by multiplying each by 2, and subscribe:
 ```c++
 auto subscription = source
     .map([](int v) { return v * 2; })
@@ -153,7 +163,7 @@ Output:
 8
 ```
 
-### Using `filter()` function
+### Using `filter()`
 Print only even numbers:
 ```c++
 auto subscription = source
@@ -169,10 +179,12 @@ Output:
 4
 ```
 
-### Using `reduce()` function
-Make a sum of every stream value. `reduce()` takes 2 parameters:
-- callable (lambda in our case) taking one extra parameter (accumulation value)
-- initial value. `0` in our case
+### Using `reduce()`
+Calculate the sum of all stream values.
+
+`reduce()` takes 2 parameters:
+- a callable (a lambda in our case) that takes the current value and the accumulated value
+- the initial value (0 in our case)
 
 ```c++
 auto subscription = source
@@ -186,10 +198,10 @@ Output:
 ```
 10
 ```
-### Combination of functions
-It is possible to make a combinaton of these functions.
+### Combining functions
+It is possible to combine these functions.
 
-Let's filter only even numbers, multiply them by `4`, and filter again only numbers greater than `10`:
+For example, let's filter even numbers, multiply them by 4, and then filter again to keep only numbers greater than 10:
 
 ```c++
 auto subscription = source
@@ -206,8 +218,10 @@ Output:
 16
 ```
 
-### Subscriptions to intermediate result
-Each of the functions `map()`, `filter()`, `reduce()` return and observable, so it is possible to have severals subscriptions on the observable in different places of the chain. For example, let's take previous code and add another subscription before second `filter()`, e.g. print every x4 value as long as the result `16`:
+### Subscribing to intermediate result
+Each of the functions `map()`, `filter()`, and `reduce()` returns an observable, so you can have multiple subscriptions at different points in the chain.
+
+For example, let's take the previous code and add another subscription before the second `filter()`, to print every x4 value as well as the final result `16`:
 
 ```c++
 auto& x4_observable = source
@@ -232,7 +246,9 @@ x4 value = 8
 x4 value = 16
 16
 ```
-**Lifetime warning**: `Observable<>` returned as a result to call of the `map()`, `filter()` and `reduce()` functions is not intended to be stored. By design it turns to unspecified state as soon as last subscriber is unsubscribed. For example, this code leads to errors:
+**Lifetime warning**: An `Observable<>` returned from `map()`, `filter()`, or `reduce()` is not intended to be stored. By design, it enters an unspecified state as soon as the last subscriber unsubscribes.
+
+For example, this code will lead to errors:
 ```c++
 auto& x4_observable = source
     .filter([](int x) { return x % 2 == 0; })
@@ -254,7 +270,7 @@ auto subscription = x4_observable
     });
 ```
 
-So be sure to make all subscriptions before unsubscribe the only subscriber. This code works fine:
+Make sure to set up all subscriptions before unsubscribing the only subscriber. This code works fine:
 ```c++
 auto& x4_observable = source
     .filter([](int x) { return x % 2 == 0; })
@@ -280,25 +296,25 @@ x4_subscription.unsubscribe();
 ```
 
 # Multithreading
-More interesting and useful usages of the `tiny_rx` is about multithreaded environment.
+One of the most powerful and practical aspects of **`tiny_rx`** is its support for multithreaded environments.
 
 ## Overview
-The library provides 4 types of connections:
-- Same thread as values sources
-- Another thread
-- Thread pool with tweakable capacity
-- Run loop (placeholder)
+The library provides 4 types of execution contexts:
+- Same thread as the value source
+- A dedicated thread
+- A thread pool with configurable capacity
+- Run loop (placeholder for integration into external frameworks)
 
-There's a concept of `Executor` is introduced in `tiny_rx`. To support different threading model caller should specify an object implemening `IExecutor` interface. Implementation classes for different connection types:
-- `SingleThreadExecutor` for one thread, different from the caller
-- `ThreadPoolExecutor` for thread pool with tweakable capacity
-- `RunLoopExecutor` is a placeholder for injecting into framework's run loop
+The concept of an `Executor` is introduced in **`tiny_rx`**. To support different threading models, the caller specifies an object implementing the `IExecutor` interface. Implementation classes include:
+- `SingleThreadExecutor` - runs tasks in a dedicated single thread, separate from the caller
+- `ThreadPoolExecutor` - runs tasks in a thread pool with configurable capacity
+- `RunLoopExecutor` - a placeholder designed for integration into a framework's run loop
 
-## Same thread as values source
-All the above examples work in the same thread as the `Observable`. No need to do something for this behavior
+## Same thread as the value source
+All the examples above run in the same thread as the `Observable`. No additional setup is required.
 
 ## Work in another thread
-Let's process our values in different thread. Create `SingleThreadExecutor` and pass it as a shared pointer by calling `subscribe_on()`:
+To process values in a different thread, create a `SingleThreadExecutor` and pass it as a shared pointer using `subscribe_on()`:
 ```c++
 auto single_thread_executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
 auto subscription = source
@@ -323,10 +339,10 @@ Output:
 [22308] 3
 [22308] 4
 ```
-`SingleThreadExecutor` can be reused for different subscriptions, all the tasks will be executed in the same thread.
+A `SingleThreadExecutor` can be reused for multiple subscriptions; all tasks will be executed in the same dedicated thread.
 
-## Work in thread pool
-To use thread pool, use another executor named `ThreadPoolExecutor`. Let's rewrite last example with thread pool with the capacity of 3:
+## Work in a thread pool
+To use a thread pool, use the `ThreadPoolExecutor`. Let's rewrite the last example with a thread pool of capacity 3:
 ```c++
 auto thread_pool_executor = std::make_shared<tiny_rx::ThreadPoolExecutor>(3);
 std::mutex out_mutex;
@@ -346,7 +362,7 @@ for (auto v : values) {
 }
 source.end();
 ```
-Note mutex to avoid garbage in console output.
+Note: a mutex is required to avoid corrupted console output.
 
 Output:
 ```
@@ -357,22 +373,22 @@ Output:
 [23300] 4
 ```
 ## Run loop executor
-Sometimes there's a need to inject processing into framework code:
-- Qt event loop
-- NoesisGUI drawing routine
-- ... etc.
+Sometimes there's a need to inject processing into a framework's event loop, such as:
+- `Qt` event loop
+- `NoesisGUI` rendering routine
+- etc.
 
-There's no general approaches to this implementation, so `tiny_rx` provides a class with the implementation of functions:
-- `add_task()` function to add a task
-- `dispatch()` to execute stored task
+Since there is no universal solution, **`tiny_rx`** provides a class with two functions:
+- `add_task()` - adds a task
+- `dispatch()` - executes queued tasks
 
-It's up to the framework where and when to execute the `dispatch()`, it should be integrated at the right place
+It is up to the framework to decide where and when to call `dispatch()`. This should be integrated at the appropriate place in the loop.
 
 ## `map()`, `filter()` and `reduce()` on different threads
-Sometimes these functions are resource-heavy, so it is better to call them on different thread using `ThreadPoolExecutor`. Also it might be useful to execute all calculations on one separate thread with `SingleThreadExecutor`. Let's write the code, which:
-- executes all `map()` functions on different thread
-- executes all `filter()` functions in the thread pool
-- executes `on_next()` on another thread
+Sometimes these functions are resource-heavy, and it's better to run them in separate threads using a `ThreadPoolExecutor`. Alternatively, all calculations can be executed on a single dedicated thread with a `SingleThreadExecutor`. For example, the following code:
+- executes all `map()` functions in a separate thread
+- executes all `filter()` functions in a thread pool
+- executes `on_next()` in another thread
 
 ```c++
 auto map_executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
@@ -455,7 +471,6 @@ Output:
 [9780] triple 12
 ```
 
-Note that all [map thread] (from both subscriptions) are reported as one thread, all values output are reported as another thread, and all [filter thread] use different threads (up to 3)
+Note: all `[map thread]` outputs (from both subscriptions) come from a single thread, all value outputs come from another thread, and `[filter thread]` outputs are distributed across different threads (up to 3).
 
-
-Some other examples can be found in tests, which are more like snippets than usual unit-tests.
+Additional examples can be found in the tests, which are written more like usage snippets than traditional unit tests.
