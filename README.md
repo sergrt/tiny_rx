@@ -18,6 +18,7 @@
   - [Work in thread pool](#work-in-thread-pool)
   - [Run loop executor](#run-loop-executor)
   - [`map()`, `filter()` and `reduce()` on different threads](#map-filter-and-reduce-on-different-threads)
+  - [Lifetime notes](#lifetime-notes)
 
 
 **tiny-rx** is a compact open-source reactive programming C++ library with simple and comprehensible threading model.
@@ -288,7 +289,7 @@ All the above examples work in the same thread as the `Observable`. No need to d
 Let's process our values in different thread. Create `SingleThreadExecutor` and pass it as a shared pointer by calling `subscribe_on()`:
 ```c++
 auto single_thread_executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
-auto observable = source
+auto subscription = source
     .subscribe_on(single_thread_executor)
     .subscribe([](int value) {
         std::cout << "[" << std::this_thread::get_id() << "] " << value << "\n";
@@ -299,7 +300,6 @@ const auto values = std::vector<int>{ 1, 2, 3, 4 };
 std::cout << "[" << std::this_thread::get_id() << "] Observable works here" << "\n";
 for (auto v : values) {
     source.next(v);
-    
 }
 source.end();
 ```
@@ -318,7 +318,7 @@ To use thread pool, use another executor named `ThreadPoolExecutor`. Let's rewri
 ```c++
 auto thread_pool_executor = std::make_shared<tiny_rx::ThreadPoolExecutor>(3);
 std::mutex out_mutex;
-auto observable = source
+auto subscription = source
     .subscribe_on(thread_pool_executor)
     .subscribe([&out_mutex](int value) {
         std::lock_guard lock(out_mutex);
@@ -367,7 +367,8 @@ auto map_executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
 auto filter_executor = std::make_shared<tiny_rx::ThreadPoolExecutor>(3);
 auto cout_executor = std::make_shared<tiny_rx::SingleThreadExecutor>();
 std::mutex out_mutex;
-auto observable_doubling = source
+
+auto subscription_doubling = source
     .subscribe_on(map_executor)
     .map([&out_mutex](int value) {
         std::lock_guard lock(out_mutex);
@@ -386,7 +387,7 @@ auto observable_doubling = source
         std::cout << "[" << std::this_thread::get_id() << "] double " << value << "\n";
     });
 
-auto observable_tripling = source
+auto subscription_tripling = source
     .subscribe_on(map_executor)
     .map([&out_mutex](int value) {
         std::lock_guard lock(out_mutex);
@@ -444,5 +445,24 @@ Output:
 
 Note that all [map thread] (from both subscriptions) are reported as one thread, all values output are reported as another thread, and all [filter thread] use different threads (up to 3)
 
+## Lifetime notes
+There's no need to store `shared_ptr` to `IExecutor` after it has been supplied to observable. Moreover, doing this might produce runtime errors if observable is being destroyed and thread is still working. So this approach is safe and less error-prone, if you do not plan to reuse executors for different tasks (as we did earlier):
+```c++
+std::mutex out_mutex;
+auto subscription_doubling = source
+    .subscribe_on(std::make_shared<tiny_rx::SingleThreadExecutor>())
+    .map([&out_mutex](int value) {
+        std::lock_guard lock(out_mutex);
+        std::cout << "[" << std::this_thread::get_id() << "] [map thread] " << value << "\n";
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+
+        return value * 2;
+    })
+    .subscribe_on(std::make_shared<tiny_rx::SingleThreadExecutor>())
+    .subscribe([&out_mutex](int value) {
+        std::lock_guard lock(out_mutex);
+        std::cout << "[" << std::this_thread::get_id() << "] double " << value << "\n";
+    });
+```
 
 Some other examples can be found in tests, which are more like snippets than usual unit-tests.
