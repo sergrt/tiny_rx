@@ -6,7 +6,7 @@ namespace tiny_rx {
 
 ThreadPoolExecutor::ThreadPoolExecutor(size_t pool_size) : pool_size_(pool_size) {
     for (size_t x = 0; x < pool_size_; ++x) {
-        threads_.emplace_back(std::thread([this]() {
+        threads_.emplace_back([this]() {
             while (!stop_thread_) {
 
                 auto lock = std::unique_lock<std::mutex>(mutex_);
@@ -23,10 +23,10 @@ ThreadPoolExecutor::ThreadPoolExecutor(size_t pool_size) : pool_size_(pool_size)
                 try{
                     task();
                 } catch(std::exception& e) {
-                    tiny_rx::utils::log_out(std::cerr, "ThreadPoolExecutor exception on taslk: ", e.what());
+                    log(utils::LogSeverity::Error, "ThreadPoolExecutor exception on taslk: ", e.what());
                 }
             }
-        }));
+        });
     }
 }
 

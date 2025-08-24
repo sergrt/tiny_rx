@@ -13,7 +13,7 @@ public:
     // TODO: remove these operations - they're here for debug purposes only
     Subscription(const Subscription& other);
     Subscription(Subscription&& other) noexcept;
-    Subscription& operator=(const Subscription other) noexcept;
+    Subscription& operator=(Subscription other) noexcept;
     ~Subscription();
 
     void reset();
@@ -25,8 +25,8 @@ private:
 
     std::shared_ptr<bool> valid_ = std::make_shared<bool>(false);
     IObservable* observable_{nullptr};
-    Guid subscriber_uuid_{};
-    Guid uuid_{};
+    Guid subscriber_uuid_;
+    Guid uuid_;
 };
 
 } // namespace tiny_rx

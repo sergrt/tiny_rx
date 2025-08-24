@@ -29,15 +29,15 @@ std::string Guid::to_string() const {
     std::string res;
     res.reserve(36);
     static constexpr int kConvertBufferSize = 3;
-    char convertBuffer[kConvertBufferSize] {};
+    char convert_buffer[kConvertBufferSize] {};
     for (int i = 0; i < 16; i++) {
         if (kDash[i])
             res += "-";
-        if (snprintf(convertBuffer, kConvertBufferSize, "%02X", data_[i]) != kConvertBufferSize - 1) {
+        if (snprintf(convert_buffer, kConvertBufferSize, "%02X", data_[i]) != kConvertBufferSize - 1) {
             throw(std::runtime_error("Unable to convert guid"));
-        } else {
-            res += std::string(convertBuffer);
         }
+
+        res += std::string(convert_buffer);
     }
     return res;
 }

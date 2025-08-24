@@ -1,5 +1,7 @@
 #include "run_loop_executor.h"
 
+#include "log.h"
+
 namespace tiny_rx {
 
 void RunLoopExecutor::add_task(std::function<void()> f) {
@@ -13,7 +15,11 @@ void RunLoopExecutor::dispatch() {
     tasks_.pop_front();
     lock.unlock();
 
-    task();
+    try {
+        task();
+    } catch (const std::exception& e) {
+        log(utils::LogSeverity::Error, "RunLoopExecutor exception on task: ", e.what());
+    }
 }
 
 size_t RunLoopExecutor::size() const {

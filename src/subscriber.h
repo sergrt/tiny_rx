@@ -104,7 +104,7 @@ private:
         std::swap(executor_, other.executor_);
     }
 
-    Guid uuid_{};
+    Guid uuid_;
     std::function<void(T...)> func_;
     std::function<void()> end_func_;
     std::function<void(std::string)> error_func_;

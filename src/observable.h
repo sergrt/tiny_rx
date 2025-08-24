@@ -56,7 +56,7 @@ public:
     }
 
     template<typename ...F>
-    Subscription subscribe(F... args) {
+    Subscription subscribe(F&&... args) {
         constexpr std::size_t size = sizeof...(F);
 
         subscribers_.emplace_back(Subscriber<T...>());
@@ -87,7 +87,7 @@ public:
     }
 
     std::optional<Subscription> get_linked_subscription() override {
-        return linked_subscription_;
+        return std::optional<Subscription>{linked_subscription_};
     }
 
     size_t subscribers_count() const override {
@@ -99,7 +99,7 @@ public:
             linked_subscription_->unsubscribe();
     }
 
-    void next(T... value) {
+    void next(const T&... value) {
         for (auto& subscriber : subscribers_) {
             subscriber.on_next(value...);
         }
@@ -111,7 +111,7 @@ public:
         }
     }
 
-    void error(std::string descr) {
+    void error(const std::string& descr) {
         for (auto& subscriber : subscribers_) {
             subscriber.on_error(descr);
         }
@@ -120,7 +120,7 @@ public:
     Observable& map(std::function<std::tuple<T...>(T...)> map_func) {
         auto proxy_observable = std::make_shared<Observable<T...>>();
         auto subscription = this->subscribe(
-            [map_func, proxy_observable](T... args) {
+            [map_func = std::move(map_func), proxy_observable](const T&... args) {
             auto res = map_func(args...);
             std::apply(&Observable::next, std::tuple_cat(make_tuple(proxy_observable.get()), res));
         });
@@ -131,7 +131,7 @@ public:
     Observable& filter(std::function<bool(T...)> filter_func) {
         auto proxy_observable = std::make_shared<Observable<T...>>();
         auto subscription = this->subscribe(
-            [filter_func, proxy_observable](T... args) {
+            [filter_func = std::move(filter_func), proxy_observable](const T&... args) {
             const auto filter_res = filter_func(args...);
             if (filter_res)
                 proxy_observable->next(args...);
@@ -146,7 +146,7 @@ public:
         auto result = std::make_shared<I>(init_val);
 
         auto subscription = this->subscribe(
-            [reduce_func, result](T... args) {
+            [reduce_func = std::move(reduce_func), result](T... args) {
             std::apply([reduce_func, result](auto&&... values) {((
                 *result = reduce_func(*result, values)
                 ), ...); }, std::make_tuple(args...));
@@ -169,7 +169,7 @@ private:
 
     std::list<Subscriber<T...>> subscribers_;
     std::list<Subscription> subscriptions_;
-    const Guid uuid_{}; // For debug purposes
+    const Guid uuid_; // For debug purposes
 
     // linked - means that this observable is a proxy observable
     // made to allow subscribers to subscribe on map, filter or other function

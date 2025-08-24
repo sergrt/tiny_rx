@@ -9,7 +9,7 @@ namespace tiny_rx {
 class Guid {
 public:
     Guid();
-    std::string to_string() const;
+    [[nodiscard]] std::string to_string() const;
     bool operator==(const Guid& other) const;
 
 private:

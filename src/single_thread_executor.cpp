@@ -1,5 +1,7 @@
 #include "single_thread_executor.h"
 
+#include "log.h"
+
 namespace tiny_rx {
 
 SingleThreadExecutor::SingleThreadExecutor() {
@@ -14,7 +16,11 @@ SingleThreadExecutor::SingleThreadExecutor() {
             tasks_.pop_front();
             lock.unlock();
 
-            task();
+            try {
+                task();
+            } catch (const std::exception& e) {
+                log(utils::LogSeverity::Error, "SingleThreadExecutor exception on task: ", e.what());
+            }
         }
     });
 }

@@ -114,8 +114,6 @@ TEST(Observable_Stream_Functions, Check_Reduce) {
         return buf + v;
     }, 0).subscribe([&result](int v) {
         result = v;
-    },
-    []() {
     });
 
     for (const auto v : values) {
@@ -139,8 +137,6 @@ TEST(Observable_Stream_Functions, Check_Reduce_Many_Values) {
         return buf * v;
     }, 1).subscribe([&result](int v) {
         result = v;
-    },
-    []() {
     });
 
     for (size_t i = 0; i < first_values.size(); ++i) {

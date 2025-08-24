@@ -14,7 +14,7 @@ namespace tiny_rx {
 
 class ThreadPoolExecutor : public IExecutor {
 public:
-    ThreadPoolExecutor(size_t pool_size = std::thread::hardware_concurrency());
+    explicit ThreadPoolExecutor(size_t pool_size = std::thread::hardware_concurrency());
     ~ThreadPoolExecutor() override;
     ThreadPoolExecutor(ThreadPoolExecutor&&) = delete;
     ThreadPoolExecutor& operator=(const ThreadPoolExecutor&) = delete;
