@@ -1,6 +1,5 @@
-# tiny_rx reactive programming c++ library
-
-- [tiny\_rx reactive programming c++ library](#tiny_rx-reactive-programming-c-library)
+**`tiny_rx`** is a c++ reactive programming library
+- [`tiny_rx` description](#tiny_rx-description)
 - [Overview](#overview)
   - [Features](#features)
 - [Usage](#usage)
@@ -18,13 +17,26 @@
   - [Work in thread pool](#work-in-thread-pool)
   - [Run loop executor](#run-loop-executor)
   - [`map()`, `filter()` and `reduce()` on different threads](#map-filter-and-reduce-on-different-threads)
-  - [Lifetime notes](#lifetime-notes)
 
+# `tiny_rx` description
 
-**tiny-rx** is a compact open-source reactive programming C++ library with simple and comprehensible threading model.
+**`tiny-rx`** is a compact open-source reactive programming C++ library with simple and comprehensible threading model.
 
 # Overview
 Reactive programming is a programming paradigm centered around asynchronous data streams and the propagation of changes. It provides a declarative approach to handle events and data that change over time, making code more readable, maintainable, and scalable, especially in applications that require responsiveness and real-time data processing.
+
+Some frameworks have a luxury of some sort of notifications, e.g. `Qt`'s signal/slot mechanism. It is a handy tool to pass notifications, react on appearing of values, process stream data etc.
+
+The problems are that not every framework provide such a tool. Additionally, `Qt`, for example, relies on moc compiler. And, more important, frameworks that provide such behavior are usually UI frameworks. So the most of the time there is no way to use them in backend or middleware.
+
+Another problem of such notifications is that they are targeting single events and usually not really suitable to handle streams of data.
+
+`tiny_rx` targets all of these issues:
+- easy to use notification-response mechanics
+- free from any dependencies and additional compilation steps
+- suitable to be used on every layer: UI (especially Immediate-mode UI libraries), backend, middleware
+- provides `map()`, `filter()` and `reduce()` functions to work with streams of data
+- ready to be used in multithreaded environment for better resources utilization
 
 ## Features
 **tiny_rx** implements following reactive programming entities:
@@ -445,24 +457,5 @@ Output:
 
 Note that all [map thread] (from both subscriptions) are reported as one thread, all values output are reported as another thread, and all [filter thread] use different threads (up to 3)
 
-## Lifetime notes
-There's no need to store `shared_ptr` to `IExecutor` after it has been supplied to observable. Moreover, doing this might produce runtime errors if observable is being destroyed and thread is still working. So this approach is safe and less error-prone, if you do not plan to reuse executors for different tasks (as we did earlier):
-```c++
-std::mutex out_mutex;
-auto subscription_doubling = source
-    .subscribe_on(std::make_shared<tiny_rx::SingleThreadExecutor>())
-    .map([&out_mutex](int value) {
-        std::lock_guard lock(out_mutex);
-        std::cout << "[" << std::this_thread::get_id() << "] [map thread] " << value << "\n";
-        std::this_thread::sleep_for(std::chrono::seconds(5));
-
-        return value * 2;
-    })
-    .subscribe_on(std::make_shared<tiny_rx::SingleThreadExecutor>())
-    .subscribe([&out_mutex](int value) {
-        std::lock_guard lock(out_mutex);
-        std::cout << "[" << std::this_thread::get_id() << "] double " << value << "\n";
-    });
-```
 
 Some other examples can be found in tests, which are more like snippets than usual unit-tests.
