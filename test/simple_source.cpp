@@ -1,6 +1,7 @@
 #include "tiny_rx.h"
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 TEST(Observable_Source_Int, Check_Next) {
     tiny_rx::Observable<int> observable;
@@ -56,7 +57,7 @@ TEST(Observable_Source_Int, Check_Object_Subscriber) {
         void on_end() {
             
         }
-        void on_error(std::string description) {
+        void on_error(const std::string& description) {
             
         }
         auto get_result() const {
@@ -80,6 +81,39 @@ TEST(Observable_Source_Int, Check_Object_Subscriber) {
     EXPECT_EQ(values, subscriber_object->get_result());
 }
 
+TEST(Observable_Source_Int, Check_Next_OnEnd_OnError) {
+    auto source = tiny_rx::Observable<int>();
+
+    const auto values = std::vector<int>{ 1, 2, 3, 4 };
+    std::vector<int> collected_values;
+    int on_end_call_times = 0;
+    const auto errors = std::vector<std::string>{ std::string("err_2"), std::string("err_4") };
+    std::vector<std::string> collected_errors;
+
+    auto subscription = source.subscribe([&collected_values](int value) {
+        collected_values.push_back(value);
+    },
+    [&on_end_call_times]() {
+        ++on_end_call_times;
+    },
+    [&collected_errors](const std::string& descr) {
+        collected_errors.push_back(descr);
+    });
+    
+    for (auto v : values) {
+        source.next(v);
+        if (v % 2 == 0)
+            source.error("err_" + std::to_string(v));
+    }
+    source.end();
+
+    EXPECT_THAT(values, testing::ElementsAreArray(collected_values));
+    EXPECT_EQ(on_end_call_times, 1);
+    EXPECT_THAT(errors, testing::ElementsAreArray(collected_errors));
+
+    subscription.unsubscribe();
+}
+
 TEST(Observable_Source_Int, Check_Object_Subscriber_Two_Values) {
 
     class SubscriberObject {
@@ -90,7 +124,7 @@ TEST(Observable_Source_Int, Check_Object_Subscriber_Two_Values) {
         void on_end() {
 
         }
-        void on_error(std::string description) {
+        void on_error(const std::string& description) {
 
         }
         auto get_result() const {
@@ -115,4 +149,41 @@ TEST(Observable_Source_Int, Check_Object_Subscriber_Two_Values) {
     }
 
     EXPECT_EQ(etalon, subscriber_object->get_result());
+}
+
+TEST(Observable_Source_Int, Check_Unsubscribe) {
+    auto source = tiny_rx::Observable<int>();
+
+    const auto values = std::vector<int>{ 1, 2, 3, 4 };
+    const auto etalon_values = std::vector<int>{ 1, 2 };
+    std::vector<int> collected_values;
+    int on_end_call_times = 0;
+    const auto errors = std::vector<std::string>{ std::string("err_2") };
+    std::vector<std::string> collected_errors;
+
+    auto subscription = source.subscribe([&collected_values](int value) {
+        collected_values.push_back(value);
+    },
+    [&on_end_call_times]() {
+        ++on_end_call_times;
+    },
+    [&collected_errors](const std::string& descr) {
+        collected_errors.push_back(descr);
+    });
+    
+    for (auto v : values) {
+        if (v > 2) {
+            source.end();
+            subscription.unsubscribe();
+        }
+        source.next(v);
+        if (v % 2 == 0)
+            source.error("err_" + std::to_string(v));
+        
+    }
+    source.end();
+
+    EXPECT_THAT(etalon_values, testing::ElementsAreArray(collected_values));
+    EXPECT_EQ(on_end_call_times, 1);
+    EXPECT_THAT(errors, testing::ElementsAreArray(collected_errors));
 }
