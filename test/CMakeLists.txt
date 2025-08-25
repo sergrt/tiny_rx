@@ -19,6 +19,7 @@ set(SOURCE
     simple_source.cpp
     sources.cpp
     stream_functions.cpp
+    threading_model.cpp
     tiny_rx_tests.cpp
 )
 

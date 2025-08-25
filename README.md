@@ -473,4 +473,17 @@ Output:
 
 Note: all `[map thread]` outputs (from both subscriptions) come from a single thread, all value outputs come from another thread, and `[filter thread]` outputs are distributed across different threads (up to 3).
 
+Note: calls to `subscribe_on()` have transitive effect: all other subscriptions of the expression (till `;`) will use last supplied executor, e.g.:
+
+```c++
+auto subscription = source
+    .subscribe_on(executor)  // Executor supplied
+    .map([](int value) {
+        // executed with `executor`
+    })
+    .subscribe([](int value) {
+        // also executed with `executor`
+    });
+```
+
 Additional examples can be found in the tests, which are written more like usage snippets than traditional unit tests.
