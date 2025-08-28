@@ -64,7 +64,7 @@ TEST(Observable_Source_Int_Str, Check_Multiple_Values_Observable) {
         { 4, "D" }
     };
 
-    for (auto [i, s] : values) {
+    for (const auto& [i, s] : values) {
         source.next(i, s);
     }
     source.end();

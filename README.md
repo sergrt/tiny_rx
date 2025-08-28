@@ -127,7 +127,7 @@ const auto values = std::map<int, std::string>{
     { 4, "D" }
 };
 
-for (auto [i, s] : values) {
+for (const auto& [i, s] : values) {
     source.next(i, s);
 }
 source.end();
