@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <string>
+
 TEST(Observable_Source_Int, Check_Next) {
     tiny_rx::Observable<int> observable;
 
@@ -45,6 +47,27 @@ TEST(Observable_Source_Struct, Check_Next) {
     }
 
     EXPECT_EQ(values, results);
+}
+
+TEST(Observable_Source_Int_Str, Check_Multiple_Values_Observable) {
+    auto source = tiny_rx::Observable<int, std::string>();
+
+    auto subscription = source
+        .subscribe([](const int& value, const std::string& str) {
+            std::cout << "{ " << value << ", " << str << " }\n";
+        });
+
+    const auto values = std::map<int, std::string>{ 
+        { 1, "A" },
+        { 2, "B" }, 
+        { 3, "C" },
+        { 4, "D" }
+    };
+
+    for (auto [i, s] : values) {
+        source.next(i, s);
+    }
+    source.end();
 }
 
 TEST(Observable_Source_Int, Check_Object_Subscriber) {

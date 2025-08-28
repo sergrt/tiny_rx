@@ -4,6 +4,7 @@
   - [Features](#features)
 - [Usage](#usage)
   - [Quick start example](#quick-start-example)
+  - [Multiple values observable](#multiple-values-observable)
   - [Use stream manipulating functions](#use-stream-manipulating-functions)
     - [Using `map()`](#using-map)
     - [Using `filter()`](#using-filter)
@@ -60,7 +61,11 @@ The interface is based on well-known reactive programming libraries, making it e
 
 ## Quick start example
 Let's say we have a source of integer values and want to print them to the console
-First, create an **observable** source of `int` values:
+First, include the header file:
+```c++
+#include <tiny_rx.h>
+```
+Then create an **observable** source of `int` values:
 ```c++
 auto source = tiny_rx::Observable<int>();
 ```
@@ -104,6 +109,29 @@ void on_error(const std::string& description) {
 Pass an object of this class as an argument to the `subscribe()` function.
 
 You can implement `on_next()` with the argument passed by reference or by value.
+
+## Multiple values observable
+It is possible to create an observable producing multiple values. Let's make a stream of `[int, string]` pairs. `on_next()` function should take two parameters: same as the observable produces.
+```c++
+auto source = tiny_rx::Observable<int, std::string>();
+
+auto subscription = source
+    .subscribe([](const int& value, const std::string& str) {
+        std::cout << "{ " << value << ", " << str << " }\n";
+    });
+
+const auto values = std::map<int, std::string>{ 
+    { 1, "A" },
+    { 2, "B" }, 
+    { 3, "C" },
+    { 4, "D" }
+};
+
+for (auto [i, s] : values) {
+    source.next(i, s);
+}
+source.end();
+```
 
 ## Use stream manipulating functions
 The reactive programming paradigm usually provides three core functions for stream manipulation:
